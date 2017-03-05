@@ -4,7 +4,7 @@ package data;
  * Created by Ololo on 04.03.2017.
  */
 public class SearchAlg {
-    public static class Case{
+    public class Case{
         double sum;
         int s,e;
         public Case(double sum, int s, int e){
@@ -13,11 +13,28 @@ public class SearchAlg {
             this.e=e;
         }
     }
-    Case right,cent,left;
-    private int center;
+    //Case right,cent,left;
+   // private int center;
     //private double delta[];
-
-    private Case maxSubAr(double[] delta, int first,int last){
+    public Case maxSubAr(double[] delta, int first,int last){
+        Case right,cent,left;
+        if (first == last) {
+            return new Case( delta[first],first, last);
+        } else {
+            int center =(int) Math.floor((first+last+1)/2);
+            left = maxSubAr(delta, first, center-1 );
+            right = maxSubAr(delta, center, last);
+            cent=maxCentSubAr(delta,first,center,last);
+            if(left.sum>cent.sum&&left.sum>right.sum){
+                return left;
+            } else if (right.sum>cent.sum&&right.sum>left.sum){
+                return right;
+            } else {
+                return cent;
+            }
+        }
+    }
+   /* private Case maxSubAr(double[] delta, int first,int last){
         int firstNumber=first;
         int lastNumber=first;
         double maxSum = delta[0];
@@ -36,13 +53,11 @@ public class SearchAlg {
             }
         }
         return new Case(maxSum,firstNumber,lastNumber);
-    }
-
+    }*/
     private Case maxCentSubAr(double[] delta, int first, int center, int last){
         int firstNumber=center-1;
         double maxLSum = delta[center-1];
         double curSum= 0;
-        int firstNumberQ=center-1;
         for (int i= center-1; i >=first ; i--) {
             curSum+=delta[i];
             if(curSum>maxLSum){
@@ -62,8 +77,7 @@ public class SearchAlg {
         }
         return new Case(maxLSum+maxRSum,firstNumber,lastNumber);
     }
-
-    public Case SearchAlg(double[] delta){
+   /* public Case SearchAlg(double[] delta){
         center =(int) Math.floor((delta.length+1)/2);
         //delta=new double[price.length-1];
        // for ( int i =0;i<price.length-1 ;i++) {
@@ -80,6 +94,6 @@ public class SearchAlg {
         } else {
             return right;
         }
-    }
+    }*/
 }
 
