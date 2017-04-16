@@ -8,7 +8,7 @@ import java.util.*;
 public class BFS {
 
     static int BFS (Graph g, Graph.Vertex start, Graph.Vertex finish){
-        List<Graph.Vertex> explored = new ArrayList<Graph.Vertex>();
+        Map<Graph.Vertex,Graph.Vertex> explored = new HashMap<Graph.Vertex,Graph.Vertex>();
         List<Graph.Vertex> way = new ArrayList<Graph.Vertex>();
         bfs(g,start,finish,explored);
         buildWay(g,start,finish,explored,way);
@@ -18,41 +18,36 @@ public class BFS {
         return way.size()-1;
     }
 
-    private static boolean bfs (Graph g, Graph.Vertex start, Graph.Vertex finish, List<Graph.Vertex> explored){
+    private static boolean bfs (Graph g, Graph.Vertex start, Graph.Vertex finish, Map<Graph.Vertex,Graph.Vertex> explored){
         Queue<Graph.Vertex> queue= new LinkedList<Graph.Vertex>();
         explored.clear();
         queue.add(start);
-        explored.add(start);
+        explored.put(start,null);
         while (!queue.isEmpty()) {
             start = queue.poll();
-            /*if (start.equals(finish)) {
-                return true;
-            }*/
             Set<Graph.Vertex> neighbors = g.getNeighbors(start);
             for (Graph.Vertex neighbor : neighbors) {
-                if (explored.contains(neighbor)) {
+                if (explored.keySet().contains(neighbor)) {
                     continue;
                 }
+                queue.add(neighbor);
+                explored.put(neighbor,start);
                 if(neighbor.equals(finish)) {
                     return true;
                 }
-                queue.add(neighbor);
-                explored.add(neighbor);
             }
         }
         return false;
 
     }
 
-    private static boolean buildWay(Graph g,Graph.Vertex start, Graph.Vertex finish,List<Graph.Vertex> explored ,List<Graph.Vertex> way){
-        Set<Graph.Vertex> neighbors;
+    private static boolean buildWay(Graph g,Graph.Vertex start, Graph.Vertex finish,Map<Graph.Vertex,Graph.Vertex> explored ,List<Graph.Vertex> way){
         way.clear();
         way.add(finish);
         while(!explored.isEmpty()){
-                neighbors = g.getNeighbors(way.get(way.size()-1));
-                for (Graph.Vertex prevVertex:neighbors){
-                    if(explored.contains(prevVertex)){
-                        way.add(prevVertex);
+                for (Graph.Vertex prevVertex:explored.keySet()){
+                    if(prevVertex.equals(way.get(way.size()-1))){
+                        way.add(explored.get(prevVertex));
                         explored.remove(prevVertex);
                         if (prevVertex.equals(start)){
                             return true;
