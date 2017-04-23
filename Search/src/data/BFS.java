@@ -27,7 +27,7 @@ public class BFS {
             start = queue.poll();
             Set<Graph.Vertex> neighbors = g.getNeighbors(start);
             for (Graph.Vertex neighbor : neighbors) {
-                if (explored.keySet().contains(neighbor)) {
+                if (explored.containsKey(neighbor)) {
                     continue;
                 }
                 queue.add(neighbor);
